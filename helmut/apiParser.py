@@ -9,7 +9,7 @@ def get_canteens():
     # find all suitable canteens near to the WU11
     link = "{api}?near[lat]={lat}&near[lng]={long}".format(api=apiLoc, lat=51.029183, long=13.749062)
     with urllib.request.urlopen(link) as response:
-        canteens = json.loads(response.read())
+        canteens = json.loads(response.read().decode())
 
     # now get for each canteen the current meal plan for today and add them to the corresponding canteen
     for i, canteen in enumerate(canteens):
@@ -18,7 +18,7 @@ def get_canteens():
         link = "{api}/{canteenId}/days/{date}/meals".format(api=apiLoc, canteenId=canteen['id'], date=date)
         # fetch meals and then add them to canteens
         with urllib.request.urlopen(link) as response:
-            meals = json.loads(response.read())
+            meals = json.loads(response.read().decode())
         canteens[i].update({'meals': meals})
 
     # #save as json file
