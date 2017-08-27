@@ -1,35 +1,53 @@
 import urllib.request
 import json
 import datetime
+import logging
+
+parse_date = []
+global_canteens = []
 
 
 def get_canteens():
-    apiLoc = "http://openmensa.org/api/v2/canteens"
+    api_loc = "http://openmensa.org/api/v2/canteens"
 
-    # find all suitable canteens near to the WU11
-    link = "{api}?near[lat]={lat}&near[lng]={long}".format(api=apiLoc, lat=51.029183, long=13.749062)
-    with urllib.request.urlopen(link) as response:
-        canteens = json.loads(response.read().decode())
-
-    # now get for each canteen the current meal plan for today and add them to the corresponding canteen
-    for i, canteen in enumerate(canteens):
-        date = datetime.datetime.today().strftime("%d-%m-%Y")
-
-        link = "{api}/{canteenId}/days/{date}/meals".format(api=apiLoc, canteenId=canteen['id'], date=date)
-        # fetch meals and then add them to canteens
+    # first check, if the meals are alrady up to date
+    global parse_date
+    global global_canteens
+    if not parse_date and parse_date is not datetime.datetime.today():
+        parse_date = datetime.datetime.today()
+        # find all suitable canteens near to the WU11
+        link = "{api}?near[lat]={lat}&near[lng]={long}".format(api=api_loc, lat=51.029183, long=13.749062)
         with urllib.request.urlopen(link) as response:
-            meals = json.loads(response.read().decode())
-        canteens[i].update({'meals': meals})
+            canteens = json.loads(response.read().decode())
 
-    # #save as json file
-    #  with open("canteensJson.txt", "w") as fp:
-    #      json.dump(canteens, fp)
+        # now get for each canteen the current meal plan for today and add them to the corresponding canteen
+        for i, canteen in enumerate(canteens):
+            date = datetime.datetime.today().strftime("%d-%m-%Y")
 
-    # load json file
-    # with open("canteensJson.txt") as fp:
-    #     canteens = json.load(fp)
+            link = "{api}/{canteenId}/days/{date}".format(api=api_loc, canteenId=canteen['id'], date=date)
+            with urllib.request.urlopen(link) as response:
+                canteen_status = json.loads(response.read().decode())
+            if canteen_status['closed']:
+                canteens[i].update({'closed': True})
+            else:
+                link = "{api}/{canteenId}/days/{date}/meals".format(api=api_loc, canteenId=canteen['id'], date=date)
+                # fetch meals and then add them to canteens
+                with urllib.request.urlopen(link) as response:
+                    meals = json.loads(response.read().decode())
+                canteens[i].update({'meals': meals})
 
-    return canteens
+            # #save as json file
+            #  with open("canteensJson.txt", "w") as fp:
+            #      json.dump(canteens, fp)
+
+            # load json file
+            # with open("canteensJson.txt") as fp:
+            #     canteens = json.load(fp)
+
+        # save meals om global variable so next time no parse is needed
+        global_canteens = canteens
+        logging.info("Got all meals for: {}".format(parse_date))
+    return global_canteens
 
 
 if __name__ == "__main__":
