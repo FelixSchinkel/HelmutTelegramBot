@@ -30,6 +30,7 @@ def get_canteens():
             if canteen_status['closed']:
                 canteens[i].update({'closed': True})
             else:
+                canteens[i].update({'closed': False})
                 link = "{api}/{canteenId}/days/{date}/meals".format(api=api_loc, canteenId=canteen['id'], date=date)
                 # fetch meals and then add them to canteens
                 with urllib.request.urlopen(link) as response:
