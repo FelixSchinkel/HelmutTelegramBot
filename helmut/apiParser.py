@@ -13,8 +13,8 @@ def get_canteens():
     # first check, if the meals are alrady up to date
     global parse_date
     global global_canteens
-    if not parse_date and parse_date is not datetime.datetime.today():
-        parse_date = datetime.datetime.today()
+    if not parse_date or parse_date != datetime.date.today():
+        parse_date = datetime.date.today()
         # find all suitable canteens near to the WU11
         link = "{api}?near[lat]={lat}&near[lng]={long}".format(api=api_loc, lat=51.029183, long=13.749062)
         with urllib.request.urlopen(link) as response:
