@@ -22,6 +22,9 @@ def get_canteens():
 
         # now get for each canteen the current meal plan for today and add them to the corresponding canteen
         for i, canteen in enumerate(canteens):
+            # remove city from canteen name
+            canteen['name'] = canteen['name'].split(',')[1]
+
             date = datetime.datetime.today().strftime("%d-%m-%Y")
 
             link = "{api}/{canteenId}/days/{date}".format(api=api_loc, canteenId=canteen['id'], date=date)

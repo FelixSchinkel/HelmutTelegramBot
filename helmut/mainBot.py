@@ -2,7 +2,7 @@ import logging
 import sys
 
 import telegram
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, CommandHandler, InlineQueryHandler
 
 import telegramCommandands
 
@@ -34,8 +34,13 @@ def main():
 
     meal_handler = CommandHandler("essen", telegramCommandands.get_meals_for_canteen, pass_args=True)
     meal_handler_vegan = CommandHandler("vegan", telegramCommandands.vegan_command)
+
     dispatcher.add_handler(meal_handler)
     dispatcher.add_handler(meal_handler_vegan)
+
+    inline_caps_handler = InlineQueryHandler(telegramCommandands.inline_mode)
+    dispatcher.add_handler(inline_caps_handler)
+
     updater.start_polling()
 
     logging.info("Ready")
