@@ -33,10 +33,13 @@ def vegan_meals():
     for canteen in canteens:
         if canteen['closed']:
             continue
-        for meal in canteen['meals']:
-            if any("vegan" in n for n in meal['notes']):
-                result += "*{canteen}*\n\t -{meal} _{price}_\n".format(canteen=canteen['name'], meal=meal['name'],
-                                                                       price=get_price(meal['prices']['students']))
+
+        vegan_meals_list = [meal for meal in canteen['meals'] if any("vegan" in n for n in meal['notes'])]
+        if vegan_meals_list:
+            result += "*{canteen}*\n".format(canteen=canteen['name'])
+            for meal in vegan_meals_list:
+                result += "\t -{meal} _{price}_\n".format(meal=meal['name'],
+                                                          price=get_price(meal['prices']['students']))
 
     # when there is no vegan food ...
     if not result:
