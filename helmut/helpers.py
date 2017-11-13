@@ -17,8 +17,9 @@ def get_meals(canteen_name):
             else:
                 result += "*{canteen}*\n\t".format(canteen=canteen['name'])
                 for meal in canteen['meals']:
-                    result += "-{meal} _{price}_\n\t".format(meal=meal['name'],
-                                                             price=get_price(meal['prices']['students']))
+                    result += "-{meal} _{price}_ {emoji}\n\t".format(meal=meal['name'],
+                                                             price=get_price(meal['prices']['students']),
+                                                                     emoji = get_emojis_for_ingredients(meal['notes']))
 
     if not result:
         result = "Konnte für {} keine Mensa finden.".format(canteen_name)
@@ -38,11 +39,37 @@ def vegan_meals():
         if vegan_meals_list:
             result += "*{canteen}*\n".format(canteen=canteen['name'])
             for meal in vegan_meals_list:
-                result += "\t -{meal} _{price}_\n".format(meal=meal['name'],
-                                                          price=get_price(meal['prices']['students']))
+                result += "\t -{meal} _{price}_ {emoji}\n".format(meal=meal['name'],
+                                                          price=get_price(meal['prices']['students']),
+                                                                  emoji = get_emojis_for_ingredients(meal['notes']))
 
     # when there is no vegan food ...
     if not result:
         result = "Nischt veganes heut! 🌱"
 
     return result
+
+def get_emojis_for_ingredients(ingredients):
+    emoji = ""
+    # check for keywords and return the appropriate emoji
+    for i in ingredients:
+        if "vegan" in i:
+            emoji = emoji + "🌱"
+            continue
+        elif "vegetarisch" in i:
+            emoji = emoji + "🥕"
+            continue
+        elif "Rindfleisch" in i:
+            emoji = emoji + "🐮"
+            continue
+        elif "Schweinefleisch" in i:
+            emoji = emoji + "🐷"
+            continue
+        elif "Alkohol" in i:
+            emoji = emoji + "🍸"
+            continue
+        # elif "Knoblauch" in i:    # TODO so suitable emoji?
+        #     emoji = emoji + ""
+        #     continue
+
+    return emoji
