@@ -54,21 +54,21 @@ def get_emojis_for_ingredients(ingredients):
     # check for keywords and return the appropriate emoji
     for i in ingredients:
         if "vegan" in i:
-            emoji = emoji + "🌱"
+            emoji += "🌱"
             continue
         elif "vegetarisch" in i:
-            emoji = emoji + "🥕"
+            emoji += "🥕"
             continue
         elif "Rindfleisch" in i:
-            emoji = emoji + "🐮"
+            emoji += "🐮"
             continue
         elif "Schweinefleisch" in i:
-            emoji = emoji + "🐷"
+            emoji += "🐷"
             continue
         elif "Alkohol" in i:
-            emoji = emoji + "🍸"
+            emoji += "🍸"
             continue
-        # elif "Knoblauch" in i:    # TODO so suitable emoji?
+        # elif "Knoblauch" in i:    # TODO no suitable emoji?
         #     emoji = emoji + ""
         #     continue
 
