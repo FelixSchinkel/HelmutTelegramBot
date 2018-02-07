@@ -3,20 +3,22 @@ import json
 import datetime
 import logging
 
+from config import Config
+
 parse_date = []
 global_canteens = []
 
 
 def get_canteens():
-    api_loc = "http://openmensa.org/api/v2/canteens"
 
-    # first check, if the meals are alrady up to date
+    # first check, if the meals are already up to date
     global parse_date
     global global_canteens
     if not parse_date or parse_date != datetime.date.today():
         parse_date = datetime.date.today()
-        # find all suitable canteens near to the WU11
-        link = "{api}?near[lat]={lat}&near[lng]={long}".format(api=api_loc, lat=51.029183, long=13.749062)
+        # find all suitable canteens near to the given position
+        link = "{api}?near[lat]={lat}&near[lng]={long}"\
+            .format(api=Config.OPEN_MENSA_URL, lat=Config.POSITION_LAT, long=Config.POSITION_LONG)
         with urllib.request.urlopen(link) as response:
             canteens = json.loads(response.read().decode())
 
@@ -27,14 +29,16 @@ def get_canteens():
 
             date = datetime.datetime.today().strftime("%d-%m-%Y")
 
-            link = "{api}/{canteenId}/days/{date}".format(api=api_loc, canteenId=canteen['id'], date=date)
+            link = "{api}/{canteenId}/days/{date}"\
+                .format(api=Config.OPEN_MENSA_URL, canteenId=canteen['id'], date=date)
             with urllib.request.urlopen(link) as response:
                 canteen_status = json.loads(response.read().decode())
             if canteen_status['closed']:
                 canteens[i].update({'closed': True})
             else:
                 canteens[i].update({'closed': False})
-                link = "{api}/{canteenId}/days/{date}/meals".format(api=api_loc, canteenId=canteen['id'], date=date)
+                link = "{api}/{canteenId}/days/{date}/meals"\
+                    .format(api=Config.OPEN_MENSA_URL, canteenId=canteen['id'], date=date)
                 # fetch meals and then add them to canteens
                 with urllib.request.urlopen(link) as response:
                     meals = json.loads(response.read().decode())

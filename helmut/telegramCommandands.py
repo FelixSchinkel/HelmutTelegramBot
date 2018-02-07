@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 
-import apiParser
+import openMensaParser
 import helpers
 
 
@@ -36,7 +36,7 @@ def inline_mode(bot, update):
     # check if query is an canteen name
     # minimum length of query so not all canteens are loaded every time
     if len(query) > 2:
-        canteens = apiParser.get_canteens()
+        canteens = openMensaParser.get_canteens()
         for canteen in canteens:
             if query in canteen['name'].lower():
                 results.append(

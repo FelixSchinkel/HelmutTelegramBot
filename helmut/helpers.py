@@ -1,4 +1,4 @@
-import apiParser
+import openMensaParser
 
 
 def get_price(price):
@@ -8,7 +8,7 @@ def get_price(price):
 
 
 def get_meals(canteen_name):
-    canteens = apiParser.get_canteens()
+    canteens = openMensaParser.get_canteens()
     result = str()
     for canteen in canteens:
         if canteen_name.lower() in canteen['name'].lower():
@@ -28,7 +28,7 @@ def get_meals(canteen_name):
 
 
 def vegan_meals():
-    canteens = apiParser.get_canteens()
+    canteens = openMensaParser.get_canteens()
     result = str()
     # filter out all vegan meals
     for canteen in canteens:
@@ -73,3 +73,6 @@ def get_emojis_for_ingredients(ingredients):
         #     continue
 
     return emoji
+
+def get_popular_times():
+    pass

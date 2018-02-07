@@ -1,27 +1,29 @@
 import logging
 import sys
 
+import os
 import telegram
 from telegram.ext import Updater, CommandHandler, InlineQueryHandler
 
 import telegramCommandands
+from config import Config
 
 USAGE_TEXT = """
 
 Usage:
-    python mainBot.py API_KEY
+    EXPORT TELEGRAM_API_KEY='Your API Key'
+    python mainBot.py
 """
 
 
 def main():
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
-    if len(sys.argv) < 2:
-        print("Api Key needed!" + USAGE_TEXT)
-        return
+    if Config.TELEGRAM_API_KEY is None:
+        print('No Telegram API Key given.' + USAGE_TEXT)
 
     # check if valid API Token is applied
-    updater = Updater(sys.argv[1])
+    updater = Updater(Config.TELEGRAM_API_KEY)
     try:
         status = updater.bot.getMe()
     except telegram.TelegramError:
@@ -32,6 +34,7 @@ def main():
 
     dispatcher = updater.dispatcher
 
+    # configure keywords
     meal_handler = CommandHandler("essen", telegramCommandands.get_meals_for_canteen, pass_args=True)
     meal_handler_vegan = CommandHandler("vegan", telegramCommandands.vegan_command)
 
