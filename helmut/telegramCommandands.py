@@ -72,3 +72,8 @@ def inline_mode(bot, update):
 
     bot.answer_inline_query(update.inline_query.id, results)
 
+def popularity_command(bot, update, args):
+    result = helpers.get_popular_times(args[0])
+
+    bot.send_message(chat_id=update.message.chat_id, text=result, parse_mode='Markdown')
+    logging.info("Send /menschen {} to id: {} with text: {}".format(args[0], update.message.chat_id, result))

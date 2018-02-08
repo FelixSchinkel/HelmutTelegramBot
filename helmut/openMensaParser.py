@@ -56,7 +56,3 @@ def get_canteens():
         global_canteens = canteens
         logging.info("Got all meals for: {}".format(parse_date))
     return global_canteens
-
-
-if __name__ == "__main__":
-    get_canteens()

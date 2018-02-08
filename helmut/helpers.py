@@ -1,4 +1,8 @@
+import datetime
+import populartimes
+
 import openMensaParser
+from config import Config
 
 
 def get_price(price):
@@ -49,6 +53,7 @@ def vegan_meals():
 
     return result
 
+
 def get_emojis_for_ingredients(ingredients):
     emoji = ""
     # check for keywords and return the appropriate emoji
@@ -74,5 +79,43 @@ def get_emojis_for_ingredients(ingredients):
 
     return emoji
 
-def get_popular_times():
-    pass
+
+def get_canteen(canteen_name):
+    """
+    return canteens for the given name
+    """
+
+    canteens = openMensaParser.get_canteens()
+    data = [x for x in canteens if canteen_name.lower() in str(x['name']).lower()]
+
+    return data
+
+
+def get_popular_times(canteen_name):
+    canteen = get_canteen(canteen_name)[0]  # use only one canteen, because parsing of popularity takes pretty long
+    search_radius = 0.001
+    coordinates = canteen['coordinates']
+    pop_times = populartimes.get(Config.GMAPS_API_KEY, ['restaurant'], (coordinates[0]-search_radius,coordinates[1]-search_radius), (coordinates[0]+search_radius,coordinates[1]+search_radius))
+
+    # if current popularity is available compare it to normal popularity
+    canteen_population = pop_times[0]
+
+    # get normal population
+    now = datetime.datetime.now()
+    day_name = now.strftime('%A')
+    day_data = [x for x in canteen_population['populartimes'] if x['name'] == day_name][0]
+    normal_popularity = day_data['data'][now.hour]
+
+    if 'current_popularity' in canteen_population:
+        current_popularity = canteen_population['current_popularity']
+
+        if current_popularity > normal_popularity:
+            return('{name}: Voller als sonst: {curr}% zu {normal}%'
+                   .format(name = canteen['name'],curr = current_popularity, normal = normal_popularity))
+        else:
+            return('{name}: Leerer als sonst: {curr}% zu {normal}%'
+                   .format(name = canteen['name'], curr = current_popularity, normal = normal_popularity))
+
+    return '{name}: Keine live Werte vorhanden. Normal: {normal}%'\
+        .format(name=canteen['name'], normal = normal_popularity)
+
