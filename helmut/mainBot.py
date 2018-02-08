@@ -37,10 +37,11 @@ def main():
     # configure keywords
     meal_handler = CommandHandler("essen", telegramCommandands.get_meals_for_canteen, pass_args=True)
     meal_handler_vegan = CommandHandler("vegan", telegramCommandands.vegan_command)
-    meal_handler_vegan = CommandHandler("menschen", telegramCommandands.popularity_command, pass_args=True)
+    meal_handler_popularity = CommandHandler("menschen", telegramCommandands.popularity_command, pass_args=True)
 
     dispatcher.add_handler(meal_handler)
     dispatcher.add_handler(meal_handler_vegan)
+    dispatcher.add_handler(meal_handler_popularity)
 
     inline_caps_handler = InlineQueryHandler(telegramCommandands.inline_mode)
     dispatcher.add_handler(inline_caps_handler)
