@@ -104,7 +104,7 @@ def get_popular_times(canteen_name):
     now = datetime.datetime.now()
     day_name = now.strftime('%A')
     day_data = [x for x in canteen_population['populartimes'] if x['name'] == day_name][0]
-    normal_popularity = day_data['data'][now.hour] - 1
+    normal_popularity = day_data['data'][now.hour]
 
     if 'current_popularity' in canteen_population:
         current_popularity = canteen_population['current_popularity']
