@@ -43,8 +43,8 @@ def main():
     dispatcher.add_handler(meal_handler_vegan)
     dispatcher.add_handler(meal_handler_popularity)
 
-    inline_caps_handler = InlineQueryHandler(telegramCommandands.inline_mode)
-    dispatcher.add_handler(inline_caps_handler)
+    # inline_caps_handler = InlineQueryHandler(telegramCommandands.inline_mode)
+    # dispatcher.add_handler(inline_caps_handler)
 
     updater.start_polling()
 
